@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block header %}
+    <button class="navbar-toggler" type="button">
+    <a class="navbar-brand" href="#">WS</a>
+    </button>
+    <span class="navbar-icon">Wild Series</span>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <button class="navbar-toggler" type="button">
+                <li class="nav-item">
+                    <a class="nav" href="#">Catégories</a>
+                </li>
+                </button>
+                <button class="navbar-toggler" type="button">
+                <li class="nav-item">
+                    <a class="nav" href="#">Acteurs</a>
+                </li>
+                </button>
+                <li class="nav-item">
+                    <a class="nav" href="#">Mes favoris</a>
+                </li>
+            </ul>
+        </div>
+    <h4>Bonjour</h4>
+    <button class="avatar" type="button">avatar</button>
+{% endblock %}
+{% block body %}
+    <h1>{{ controller_name }} !</h1>
+{% endblock %}

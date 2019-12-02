@@ -10,8 +10,8 @@ class DefaultController extends AbstractController
      */
     public function index() :Response
     {
-        return $this->render('/home.html.twig', [
-            'controller_name' => 'Bienvenue sur Wild Series',
+        return $this->render('/navbar.html.twig', [
+            'controller_name' => 'Bienvenue',
         ]);
     }
 }
