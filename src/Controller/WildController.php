@@ -19,11 +19,11 @@ class WildController extends AbstractController
     }
 
     /**
-     * @Route("/wild/show/{slug}", methods={"GET","POST"}, name="wild_show")
-     * @param string $slug
+     * @Route("/wild/show/{slug}", defaults={"slug" = null}, requirements={"slug"="[a-z0-9-]+"}, methods={"GET","POST"}, name="wild_show")
+     * @param $slug
      * @return Response
      */
-    public function show(string $slug = "Aucune série sélectionnée, veuillez choisir une série"): Response
+    public function show($slug = "Aucune série sélectionnée, veuillez choisir une série"): Response
     {
         $slug = str_replace('-', ' ', $slug);
         $slug = ucwords($slug);
