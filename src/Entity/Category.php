@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="category")
  */
 class Category
 {
@@ -21,6 +23,14 @@ class Category
      */
     private $name;
 
+    public function __construct($programs)
+    {
+        $this->setPrograms($programs);
+    }
+
+    /**
+     * @return mixed
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -37,4 +47,8 @@ class Category
 
         return $this;
     }
+
 }
+
+
+
