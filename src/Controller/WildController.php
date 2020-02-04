@@ -11,8 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WildController extends AbstractController
 {
-    private $programs;
-
     /**
      * @Route("/wild", name="wild_index")
      * @return Response A response instance
@@ -38,14 +36,17 @@ class WildController extends AbstractController
      * @param $slug
      * @return Response
      */
-    public function show($slug): Response
+    public function show(?string $slug): Response
     {
         if (!$slug) {
             throw $this
                 ->createNotFoundException('No slug has been sent to find a program in program\'s table.');
         }
-        $slug = str_replace('-', ' ', $slug);
-        $slug = ucwords($slug);
+        $slug = str_replace(' ', '-', $slug);
+        $slug = preg_replace(
+            '/-/',
+            ' ', ucwords(trim(strip_tags($slug)), "-")
+        );
         $program = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findOneBy(['title' => mb_strtolower($slug)]);

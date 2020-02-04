@@ -39,14 +39,13 @@ class Program
     private $seasons;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="program")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="programs")
      */
     private $category;
 
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
-        $this->category = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,14 +89,6 @@ class Program
         return $this;
     }
 
-    public function setCategory(\App\Controller\WildController $param)
-    {
-    }
-
-    public function getCategory()
-    {
-    }
-
     /**
      * @return Collection|Season[]
      */
@@ -124,30 +115,17 @@ class Program
             if ($season->getProgram() === $this) {
                 $season->setProgram(null);
             }
-        }
-
-        return $this;
+        };
     }
 
-    public function addCategory(Category $category): self
+    public function getCategory(): ?Category
     {
-        if (!$this->category->contains($category)) {
-            $this->category[] = $category;
-            $category->setProgram($this);
-        }
-
-        return $this;
+        return $this->category;
     }
 
-    public function removeCategory(Category $category): self
+    public function setCategory(?Category $category): self
     {
-        if ($this->category->contains($category)) {
-            $this->category->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getProgram() === $this) {
-                $category->setProgram(null);
-            }
-        }
+        $this->category = $category;
 
         return $this;
     }
