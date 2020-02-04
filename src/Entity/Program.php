@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,15 +34,20 @@ class Program
     private $poster;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity="App\Entity\Season", mappedBy="program")
+     */
+    private $seasons;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="program")
      */
     private $category;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $category_id;
+    public function __construct()
+    {
+        $this->seasons = new ArrayCollection();
+        $this->category = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -83,26 +90,64 @@ class Program
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function setCategory(\App\Controller\WildController $param)
     {
-        return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function getCategory()
     {
-        $this->category = $category;
+    }
+
+    /**
+     * @return Collection|Season[]
+     */
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+
+    public function addSeason(Season $season): self
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons[] = $season;
+            $season->setProgram($this);
+        }
 
         return $this;
     }
 
-    public function getCategoryId(): ?int
+    public function removeSeason(Season $season): self
     {
-        return $this->category_id;
+        if ($this->seasons->contains($season)) {
+            $this->seasons->removeElement($season);
+            // set the owning side to null (unless already changed)
+            if ($season->getProgram() === $this) {
+                $season->setProgram(null);
+            }
+        }
+
+        return $this;
     }
 
-    public function setCategoryId(int $category_id): self
+    public function addCategory(Category $category): self
     {
-        $this->category_id = $category_id;
+        if (!$this->category->contains($category)) {
+            $this->category[] = $category;
+            $category->setProgram($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->category->contains($category)) {
+            $this->category->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getProgram() === $this) {
+                $category->setProgram(null);
+            }
+        }
 
         return $this;
     }

@@ -1,15 +1,18 @@
 <?php
-// src/Controller/WildController.php
+
 namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Program;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class WildController extends AbstractController
 {
+    private $programs;
+
     /**
      * @Route("/wild", name="wild_index")
      * @return Response A response instance
@@ -20,13 +23,13 @@ class WildController extends AbstractController
             ->getRepository(Program::class)
             ->findAll();
 
-        if (!$programs){
+        if (!$programs) {
             throw $this->createNotFoundException(
                 'No program found in program\'s table'
             );
         }
-        return $this->render('wild/index.html.twig', [
-            'programs' => $programs
+        return $this->render('index.html.twig', [
+            'programs' => $programs,
         ]);
     }
 
@@ -35,9 +38,9 @@ class WildController extends AbstractController
      * @param $slug
      * @return Response
      */
-    public function show($slug = "Aucune série sélectionnée, veuillez choisir une série"): Response
+    public function show($slug): Response
     {
-        if (!$slug){
+        if (!$slug) {
             throw $this
                 ->createNotFoundException('No slug has been sent to find a program in program\'s table.');
         }
@@ -47,11 +50,11 @@ class WildController extends AbstractController
             ->getRepository(Program::class)
             ->findOneBy(['title' => mb_strtolower($slug)]);
         if (!$program) {
-            throw $this ->createNotFoundException(
-                'No program with' .$slug.' title, found in program\'s table.'
+            throw $this->createNotFoundException(
+                'No program with ' . $slug . ' title, found in program\'s table.'
             );
         }
-        return $this->render('wild/show.html.twig', [
+        return $this->render('show.html.twig', [
             'program' => $program,
             'slug' => $slug,
         ]);
@@ -59,23 +62,50 @@ class WildController extends AbstractController
 
     /**
      * @Route("wild/category/{categoryName}",  name="wild_category")
-     * @param $categoryName
+     * @param string $categoryName
      * @return Response
      */
     public function showByCategory(string $categoryName): Response
-
     {
-        $category= $this->getDoctrine()
-                        ->getRepository(Category::class)
-                        ->findAll();
+        $category = $this->getDoctrine()
+            ->getRepository(Category::class)
+            ->findAll();
 
-        $programs= $this->getDoctrine()
-                        ->getRepository(Program::class)
-                        ->findBy(['category' => $category], ['id' => 'desc'], 3);
+        $programs = $this->getDoctrine()
+            ->getRepository(Program::class)
+            ->findBy(['category' => $category], ['id' => 'desc'], 3);
 
-        return $this->render('wild/category.html.twig', [
-            'programs'=> $programs,
+        return $this->render('category.html.twig', [
+            'programs' => $programs,
         ]);
-}
-}
+    }
 
+    /**
+     * @param Program $program
+     * @return WildController
+     */
+    public function addProgram(Program $program): self
+    {
+        if (!$this->programs->contains($program)) {
+            $this->programs[] = $program;
+            $program->setCategory($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Program $program
+     * @return WildController
+     */
+    public function removeProgram(Program $program): self
+    {
+        if ($this->programs->contains($program)) {
+            $this->programs->removeElement($program);
+            // set the owning side to null (unless already changed)
+            if ($program->getCategory() === $this) {
+                $program->setCategory(null);
+            }
+        }
+        return $this;
+    }
+}

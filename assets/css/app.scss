@@ -1,0 +1,58 @@
+body{
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 1.5em;
+  background: url("../images/pellicule.jpg");
+  background-size: cover;
+  text-align: center;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #EAD342;
+  padding: 0.6em;
+  font-size: 1.4em;
+  .navbar-toggler {
+    background-color: #162B21;
+    font-size: 0.8em;
+    border-radius: 2em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    list-style-type: none;
+  }
+  .navbar-ws{
+    border-radius: 2em;
+    background: url("../images/cinema.jpeg");
+    background-size: cover ;
+    padding: 5em;
+
+    .navbar-brand {
+      color: #FFFFFF;
+      text-align: center;
+      font-family: 'Shadows Into Light', cursive;
+      padding-left: 1.7em;
+      padding-right: 1.7em;
+      border-radius: 2em;
+      h1 {
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+#navbarSupportedContent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav{
+  color: white;
+  font-family: 'Shadows Into Light', cursive;
+}
+
+.avatar{
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 1.2em;
+  padding: 0.8em;
+}

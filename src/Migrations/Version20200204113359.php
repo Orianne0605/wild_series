@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191210125940 extends AbstractMigration
+final class Version20200204113359 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,7 +22,9 @@ final class Version20191210125940 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE program DROP category_id');
+        $this->addSql('ALTER TABLE category DROP FOREIGN KEY FK_64C19C13EB8070A');
+        $this->addSql('DROP INDEX IDX_64C19C13EB8070A ON category');
+        $this->addSql('ALTER TABLE category DROP program_id');
     }
 
     public function down(Schema $schema) : void
@@ -30,6 +32,8 @@ final class Version20191210125940 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE program ADD category_id VARCHAR(45) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('ALTER TABLE category ADD program_id INT NOT NULL');
+        $this->addSql('ALTER TABLE category ADD CONSTRAINT FK_64C19C13EB8070A FOREIGN KEY (program_id) REFERENCES program (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('CREATE INDEX IDX_64C19C13EB8070A ON category (program_id)');
     }
 }

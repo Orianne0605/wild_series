@@ -1,6 +1,5 @@
 {% extends "base.html.twig" %}
 
-
 {% block body %}
 
     {% for program in programs %}
@@ -9,11 +8,8 @@
             {{ program.title }} <br>
             {{ program.summary }} <br>
         </p>
-
     {% endfor %}
-
-    <a href="{{ path('wild_index') }}">
+    <a href="{{ path('app_index') }}">
         Retour à l'accueil
     </a>
-
 {% endblock %}

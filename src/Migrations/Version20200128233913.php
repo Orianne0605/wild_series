@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191209151738 extends AbstractMigration
+final class Version20200128233913 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,9 @@ final class Version20191209151738 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE program (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, summary LONGTEXT NOT NULL, poster VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE category CHANGE name name VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE season DROP FOREIGN KEY FK_F0E45BA968756988');
+        $this->addSql('DROP INDEX IDX_F0E45BA968756988 ON season');
+        $this->addSql('ALTER TABLE season DROP season_id_id');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +32,8 @@ final class Version20191209151738 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE program');
-        $this->addSql('ALTER TABLE category CHANGE name name VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('ALTER TABLE season ADD season_id_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE season ADD CONSTRAINT FK_F0E45BA968756988 FOREIGN KEY (season_id_id) REFERENCES episode (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('CREATE INDEX IDX_F0E45BA968756988 ON season (season_id_id)');
     }
 }
