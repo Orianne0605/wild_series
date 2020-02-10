@@ -103,7 +103,6 @@ class Program
             $this->seasons[] = $season;
             $season->setProgram($this);
         }
-
         return $this;
     }
 

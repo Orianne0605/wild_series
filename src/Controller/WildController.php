@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Program;
+use App\Entity\Season;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ class WildController extends AbstractController
 {
     /**
      * @Route("/wild", name="wild_index")
-     * @return Response A response instance
+     * @return Response
      */
     public function index(): Response
     {
@@ -82,31 +83,39 @@ class WildController extends AbstractController
     }
 
     /**
-     * @param Program $program
-     * @return WildController
+     * @Route("/wild/program/{slug}", defaults={"slug" = null}, requirements={"slug"="[a-z0-9-]+"}, methods={"GET","POST"}, name="wild_show")
+     * @param $slug
+     * @return Response
      */
-    public function addProgram(Program $program): self
+    public function showByProgram(?string $slug): Response
     {
-        if (!$this->programs->contains($program)) {
-            $this->programs[] = $program;
-            $program->setCategory($this);
+        if (!$slug) {
+            throw $this
+                ->createNotFoundException('No slug has been sent to find a program in program\'s table.');
         }
-        return $this;
-    }
+        $slug = str_replace(' ', '-', $slug);
+        $slug = preg_replace(
+            '/-/',
+            ' ', ucwords(trim(strip_tags($slug)), "-")
+        );
 
-    /**
-     * @param Program $program
-     * @return WildController
-     */
-    public function removeProgram(Program $program): self
-    {
-        if ($this->programs->contains($program)) {
-            $this->programs->removeElement($program);
-            // set the owning side to null (unless already changed)
-            if ($program->getCategory() === $this) {
-                $program->setCategory(null);
-            }
+        $season = $this->getDoctrine()
+            ->getRepository(Season::class)
+            ->findAll();
+
+        $program = $this->getDoctrine()
+            ->getRepository(Program::class)
+            ->findOneBy(['title' => mb_strtolower($slug)]);
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with ' . $slug . ' title, found in program\'s table.'
+            );
         }
-        return $this;
+
+        return $this->render('program.html.twig', [
+            'program' => $program,
+            'slug' => $slug,
+            'season' => $season,
+        ]);
     }
 }
