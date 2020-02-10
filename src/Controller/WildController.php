@@ -99,10 +99,6 @@ class WildController extends AbstractController
             ' ', ucwords(trim(strip_tags($slug)), "-")
         );
 
-        $season = $this->getDoctrine()
-            ->getRepository(Season::class)
-            ->findAll();
-
         $program = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findOneBy(['title' => mb_strtolower($slug)]);
@@ -112,10 +108,36 @@ class WildController extends AbstractController
             );
         }
 
+        $season = $this->getDoctrine()
+            ->getRepository(Season::class)
+            ->findAll();
+
         return $this->render('program.html.twig', [
             'program' => $program,
-            'slug' => $slug,
             'season' => $season,
+            'slug' => $slug,
+        ]);
+    }
+
+    /**
+     * @Route("/wild/season/{id}", name="wild_season")
+     * @param int $id
+     * @return Response
+     */
+    public function showBySeason(int $id): Response
+    {
+        $season = $this->getDoctrine()
+            ->getRepository(Season::class)
+            ->findOneBy(['number' => mb_strtolower($id)]);
+        if (!$season) {
+            throw $this->createNotFoundException(
+                'No program with ' . $id . ' number, found in season\'s table.'
+            );
+        }
+
+        return $this->render('season.html.twig', [
+            'season' => $season,
+            'id' => $id
         ]);
     }
 }

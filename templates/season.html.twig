@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ id }}{% endblock %}
+
+{% block body %}
+
+<div class="media-body">
+    <p><a href="{{ path('wild_index')}}">Saison : {{ season.number }}</a></p>
+
+    <a href="{{ path('wild_index') }}">
+        Retour à l'accueil
+    </a>
+</div>
+
+{% endblock %}
